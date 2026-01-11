@@ -21,6 +21,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
     const [modelLoaded, setModelLoaded] = useState(false);
     const [debugLogs, setDebugLogs] = useState<string[]>([]);
     const [previewRef, setPreviewRef] = useState<(Reference & { score: number }) | null>(null);
+    const [zoomLevel, setZoomLevel] = useState(1);
     const requestRef = useRef<number | null>(null);
 
     const addLog = (msg: string) => {
@@ -170,7 +171,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
             {/* Header + Logs */}
             <div className="bg-gray-950 p-3 flex justify-between items-center text-white border-b border-gray-800">
                 <div className="flex flex-col">
-                    <span className="font-bold text-sm">Búsqueda IA v15 (PREVIEW)</span>
+                    <span className="font-bold text-sm">Búsqueda IA v16 (INDUSTRIAL)</span>
                     <div className="flex gap-2 text-[9px] text-green-500 font-mono mt-1">
                         {debugLogs.map((l, i) => <span key={i} className="opacity-70">{l} |</span>)}
                     </div>
@@ -185,36 +186,65 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                 {/* IMAGE PREVIEW OVERLAY */}
                 {previewRef && (
                     <div className="absolute inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4 animate-in fade-in duration-200">
-                        <div className="relative w-full max-w-lg flex-1 flex flex-col items-center justify-center">
-                            <img
-                                src={`/images/perfiles/${previewRef.code}.jpg`}
-                                onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    if (target.src.includes('.jpg')) {
-                                        target.src = `/images/perfiles/${previewRef.code}.bmp`;
-                                    } else if (target.src.includes('.bmp') && !target.src.includes('/images/')) {
-                                        target.src = `/images/${previewRef.code}.jpg`;
-                                    }
-                                }}
-                                alt={previewRef.code}
-                                className="w-full h-full object-contain max-h-[60vh] rounded-lg shadow-2xl bg-white/5"
-                            />
-                            <div className="mt-4 text-center">
-                                <h2 className="text-2xl font-bold text-white mb-1">{previewRef.code}</h2>
-                                <p className="text-sm text-green-400 font-mono mb-6">Coincidencia: {(previewRef.score * 100).toFixed(1)}%</p>
+
+                        {/* ZOOM CONTROLS */}
+                        <div className="absolute top-4 right-4 flex flex-col gap-4 z-50">
+                            <button onClick={() => setZoomLevel(prev => Math.min(prev + 1, 4))} className="w-14 h-14 bg-blue-600 rounded-xl text-white text-2xl font-bold shadow-lg border-2 border-white/20 active:scale-95 flex items-center justify-center">
+                                ➕
+                            </button>
+                            <button onClick={() => setZoomLevel(1)} className="w-14 h-14 bg-gray-700 rounded-xl text-white text-xl font-bold shadow-lg border-2 border-white/20 active:scale-95 flex items-center justify-center">
+                                ↺
+                            </button>
+                            <button onClick={() => setZoomLevel(prev => Math.max(prev - 1, 1))} className="w-14 h-14 bg-blue-600 rounded-xl text-white text-2xl font-bold shadow-lg border-2 border-white/20 active:scale-95 flex items-center justify-center">
+                                ➖
+                            </button>
+                        </div>
+
+                        <div className="relative w-full max-w-lg flex-1 flex flex-col items-center justify-center overflow-hidden">
+                            <div className="flex-1 w-full overflow-auto flex items-center justify-center bg-white/5 rounded-lg border border-white/10 relative">
+                                <img
+                                    src={`/images/perfiles/${previewRef.code}.jpg`}
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        if (target.src.includes('.jpg')) {
+                                            target.src = `/images/perfiles/${previewRef.code}.bmp`;
+                                        } else if (target.src.includes('.bmp') && !target.src.includes('/images/')) {
+                                            target.src = `/images/${previewRef.code}.jpg`;
+                                        }
+                                    }}
+                                    alt={previewRef.code}
+                                    style={{
+                                        transform: `scale(${zoomLevel})`,
+                                        transformOrigin: 'center center',
+                                        transition: 'transform 0.2s ease-out'
+                                    }}
+                                    className="max-w-full max-h-[60vh] object-contain"
+                                />
+                            </div>
+
+                            <div className="mt-4 text-center w-full bg-gray-900/80 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                                <div className="flex justify-between items-center mb-4">
+                                    <div className="text-left">
+                                        <h2 className="text-3xl font-bold text-white tracking-wider">{previewRef.code}</h2>
+                                        <p className="text-sm text-green-400 font-mono">Similitud: {(previewRef.score * 100).toFixed(0)}%</p>
+                                    </div>
+                                    <div className="px-3 py-1 bg-blue-900/50 rounded-lg border border-blue-500/30 text-blue-200 text-xs font-bold">
+                                        ZOOM: {zoomLevel}x
+                                    </div>
+                                </div>
 
                                 <div className="flex gap-4">
                                     <button
-                                        onClick={() => setPreviewRef(null)}
-                                        className="px-6 py-3 rounded-full bg-gray-700 text-white font-bold active:scale-95 transition-transform"
+                                        onClick={() => { setZoomLevel(1); setPreviewRef(null); }}
+                                        className="flex-1 py-4 rounded-xl bg-gray-700 text-white font-bold text-lg border-2 border-gray-600 active:bg-gray-600 transition-colors"
                                     >
-                                        ⬅ Volver
+                                        ⬅ VOLVER
                                     </button>
                                     <button
                                         onClick={() => { handleClose(); onSelectRef(previewRef); }}
-                                        className="px-6 py-3 rounded-full bg-blue-600 text-white font-bold active:scale-95 transition-transform shadow-lg shadow-blue-600/30"
+                                        className="flex-1 py-4 rounded-xl bg-blue-600 text-white font-bold text-lg border-2 border-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.5)] active:bg-blue-500 transition-colors"
                                     >
-                                        Ver Ficha ➡
+                                        VER FICHA ➡
                                     </button>
                                 </div>
                             </div>
