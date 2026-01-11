@@ -164,7 +164,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
             {/* Header + Logs */}
             <div className="bg-gray-950 p-3 flex justify-between items-center text-white border-b border-gray-800">
                 <div className="flex flex-col">
-                    <span className="font-bold text-sm">Búsqueda IA v13 (IMAGENES)</span>
+                    <span className="font-bold text-sm">Búsqueda IA v14 (COMPACTO)</span>
                     <div className="flex gap-2 text-[9px] text-green-500 font-mono mt-1">
                         {debugLogs.map((l, i) => <span key={i} className="opacity-70">{l} |</span>)}
                     </div>
@@ -174,7 +174,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
 
             {error && <div className="bg-red-600 p-2 text-white text-[10px] text-center">{error}</div>}
 
-            <div className="flex-1 relative flex flex-col items-center justify-center p-4">
+            <div className="flex-1 relative flex flex-col items-center justify-center p-2">
 
                 {/* Viewfinder */}
                 {!results.length && !analyzing && (
@@ -228,16 +228,16 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                     </div>
                 )}
 
-                {/* Results */}
+                {/* Results - COMPACT GRID */}
                 {results.length > 0 && (
-                    <div className="w-full flex-1 overflow-y-auto pt-4 pb-20">
-                        <div className="flex justify-between items-center mb-4 px-2">
-                            <h3 className="text-white font-bold">Resultados</h3>
-                            <button onClick={() => { setResults([]); startCamera(); }} className="text-xs bg-white/10 text-white px-3 py-1.5 rounded-lg active:scale-95">Reintentar</button>
+                    <div className="w-full flex-1 overflow-y-auto pt-2 pb-4">
+                        <div className="flex justify-between items-center mb-2 px-1">
+                            <h3 className="text-white font-bold text-sm">Resultados ({results.length})</h3>
+                            <button onClick={() => { setResults([]); startCamera(); }} className="text-[10px] bg-white/10 text-white px-3 py-1.5 rounded-lg active:scale-95">REINTENTAR</button>
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-3 gap-2">
                             {results.map(ref => (
-                                <div key={ref.code} onClick={() => { onClose(); onSelectRef(ref); }} className="relative bg-gray-900 rounded-xl overflow-hidden active:scale-95 transition-transform border border-white/5 shadow-lg">
+                                <div key={ref.code} onClick={() => { onClose(); onSelectRef(ref); }} className="relative bg-gray-900 rounded-lg overflow-hidden active:scale-95 transition-transform border border-white/5 shadow-md">
                                     <img
                                         src={`/images/perfiles/${ref.code}.jpg`}
                                         onError={(e) => {
@@ -245,20 +245,15 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                                             if (target.src.includes('.jpg')) {
                                                 target.src = `/images/perfiles/${ref.code}.bmp`;
                                             } else if (target.src.includes('.bmp') && !target.src.includes('/images/')) {
-                                                // Try root images folder if perfiles fails? 
-                                                // valid strategy: perfiles/code.jpg -> perfiles/code.bmp -> images/code.jpg -> images/code.bmp
-                                                // For now, let's just stick to the extension swap as that's the primary issue.
-                                                // But wait, the file listing showed files in public/images too.
-                                                // Let's try to be deeper.
                                                 target.src = `/images/${ref.code}.jpg`;
                                             }
                                         }}
                                         alt={ref.code}
-                                        className="w-full h-32 object-contain p-2 bg-white"
+                                        className="w-full h-20 object-contain p-1 bg-white"
                                     />
-                                    <div className="p-2">
-                                        <div className="font-bold text-white text-sm">{ref.code}</div>
-                                        <div className="text-[10px] text-green-500 font-bold">Probabilidad: {(ref.score * 100).toFixed(0)}%</div>
+                                    <div className="p-1 text-center">
+                                        <div className="font-bold text-white text-xs truncate">{ref.code}</div>
+                                        <div className="text-[8px] text-green-500 font-bold">{(ref.score * 100).toFixed(0)}%</div>
                                     </div>
                                 </div>
                             ))}
