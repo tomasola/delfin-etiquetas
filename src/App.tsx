@@ -9,6 +9,7 @@ import { CategoryFilter } from './components/CategoryFilter'
 import { ReferenceCard } from './components/ReferenceCard'
 import { ReferenceDetail } from './components/ReferenceDetail'
 import { ToastContainer } from './components/Toast'
+import { ImageSearchModal } from './components/ImageSearchModal'
 import { getUniqueCategories, filterByCategory, filterReferences } from './utils/search'
 import { exportDataAsCSV, exportDataAsJSON } from './utils/export'
 
@@ -18,6 +19,7 @@ function App() {
   const [selectedRef, setSelectedRef] = useState<Reference | null>(null)
   const [toasts, setToasts] = useState<ToastMessage[]>([])
   const [pendingPrint, setPendingPrint] = useState(false)
+  const [showImageSearch, setShowImageSearch] = useState(false)
 
   // Pagination
   const [page, setPage] = useState(1)
@@ -152,11 +154,16 @@ function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       // ALT + P = Print
       if (e.altKey && e.key.toLowerCase() === 'p') {
+        console.log('HID: Alt+P detected via Global Listener');
         e.preventDefault()
         if (selectedRef) {
+          console.log('HID: Printing selectedRef:', selectedRef.code);
           window.print()
         } else if (filteredResults.length > 0) {
+          console.log('HID: Printing first result:', filteredResults[0].code);
           handlePrint(filteredResults[0])
+        } else {
+          console.warn('HID: Alt+P received but no reference to print');
         }
       }
     }
@@ -248,6 +255,14 @@ function App() {
         <SearchBar
           value={search}
           onChange={handleSearchChange}
+          onCameraClick={() => setShowImageSearch(true)}
+        />
+
+        <ImageSearchModal
+          isOpen={showImageSearch}
+          onClose={() => setShowImageSearch(false)}
+          onSelectRef={handleSelectRef}
+          allReferences={references}
         />
 
         {/* Category filter */}

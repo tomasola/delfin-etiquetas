@@ -213,21 +213,28 @@ function BLEPrintButton({ reference }: { reference: Reference }) {
             const blob = await response.blob()
             const arrayBuffer = await blob.arrayBuffer()
             const bytes = new Uint8Array(arrayBuffer)
+            console.log(`BLE: Image loaded, size: ${bytes.length} bytes`);
 
             // 3. Start Image Transfer Signal
             const startCmd = JSON.stringify({ command: 'START_IMAGE', size: bytes.length })
+            console.log('BLE: Sending START_IMAGE command...');
             await dataChar.writeValue(new TextEncoder().encode(startCmd))
 
             // 4. Send Image in Chunks (MTU is usually ~20-512 bytes, let's use 200 for safety)
             const chunkSize = 200
+            console.log(`BLE: Sending image in chunks of ${chunkSize}...`);
             for (let i = 0; i < bytes.length; i += chunkSize) {
                 const chunk = bytes.slice(i, i + chunkSize)
                 await imageChar.writeValueWithResponse(chunk)
-                // Small delay to prevent congestion? Bluetooth is slow.
+                if (i % (chunkSize * 10) === 0) {
+                    console.log(`BLE: Progress ${Math.round((i / bytes.length) * 100)}%`);
+                }
             }
+            console.log('BLE: Image transfer complete');
 
             // 5. Send Print Command
             const printCmd = JSON.stringify({ command: 'PRINT' })
+            console.log('BLE: Sending PRINT command...');
             await dataChar.writeValue(new TextEncoder().encode(printCmd))
 
             setStatus('connected')

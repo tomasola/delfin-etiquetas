@@ -1,8 +1,10 @@
-FS
-moononournation/GFX Library for Arduino @ 1.6.0
-SD
-SPI
-bblanchon/ArduinoJson @ ^6.21.3
 lvgl/lvgl @ 8.3.9
+FS
+bblanchon/ArduinoJson @ ^6.21.3
+bodmer/TJpg_Decoder @ ^1.1.0
+SD
+h2zero/NimBLE-Arduino @ ^1.4.1
 Wire
+SPI
 WiFi
+moononournation/GFX Library for Arduino @ 1.6.0
