@@ -164,7 +164,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
             {/* Header + Logs */}
             <div className="bg-gray-950 p-3 flex justify-between items-center text-white border-b border-gray-800">
                 <div className="flex flex-col">
-                    <span className="font-bold text-sm">Búsqueda IA v12 (DEBUG)</span>
+                    <span className="font-bold text-sm">Búsqueda IA v13 (IMAGENES)</span>
                     <div className="flex gap-2 text-[9px] text-green-500 font-mono mt-1">
                         {debugLogs.map((l, i) => <span key={i} className="opacity-70">{l} |</span>)}
                     </div>
@@ -238,7 +238,24 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                         <div className="grid grid-cols-2 gap-3">
                             {results.map(ref => (
                                 <div key={ref.code} onClick={() => { onClose(); onSelectRef(ref); }} className="relative bg-gray-900 rounded-xl overflow-hidden active:scale-95 transition-transform border border-white/5 shadow-lg">
-                                    <img src={`/images/perfiles/${ref.code}.bmp`} alt={ref.code} className="w-full h-32 object-contain p-2 bg-white" />
+                                    <img
+                                        src={`/images/perfiles/${ref.code}.jpg`}
+                                        onError={(e) => {
+                                            const target = e.target as HTMLImageElement;
+                                            if (target.src.includes('.jpg')) {
+                                                target.src = `/images/perfiles/${ref.code}.bmp`;
+                                            } else if (target.src.includes('.bmp') && !target.src.includes('/images/')) {
+                                                // Try root images folder if perfiles fails? 
+                                                // valid strategy: perfiles/code.jpg -> perfiles/code.bmp -> images/code.jpg -> images/code.bmp
+                                                // For now, let's just stick to the extension swap as that's the primary issue.
+                                                // But wait, the file listing showed files in public/images too.
+                                                // Let's try to be deeper.
+                                                target.src = `/images/${ref.code}.jpg`;
+                                            }
+                                        }}
+                                        alt={ref.code}
+                                        className="w-full h-32 object-contain p-2 bg-white"
+                                    />
                                     <div className="p-2">
                                         <div className="font-bold text-white text-sm">{ref.code}</div>
                                         <div className="text-[10px] text-green-500 font-bold">Probabilidad: {(ref.score * 100).toFixed(0)}%</div>

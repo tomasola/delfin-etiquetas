@@ -232,7 +232,7 @@ function App() {
         <div className="text-center mb-8 mt-4">
           <img src="/logo.webp" alt="Delfín" className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">
-            Delfín Etiquetas v12
+            Delfín Etiquetas v13
           </h1>
         </div>
 
