@@ -215,17 +215,27 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                             </div>
                         )}
 
-                        {/* Overlay Guidelines - Center Box */}
+                        {/* Overlay Guidelines - Center Box (50%) */}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="w-64 h-64 border-2 border-red-500 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.6)]">
+                            <div className="w-56 h-56 border-2 border-red-500 rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.65)] relative">
                                 {/* Crosshair */}
                                 <div className="absolute top-1/2 left-0 w-full h-0.5 bg-red-500/50"></div>
                                 <div className="absolute left-1/2 top-0 h-full w-0.5 bg-red-500/50"></div>
                                 {/* Tip label */}
-                                <div className="absolute -top-10 left-0 right-0 text-center text-red-500 text-xs font-bold uppercase tracking-widest bg-black/40 py-1 rounded">
+                                <div className="absolute -top-10 left-0 right-0 text-center text-red-500 text-[10px] font-bold uppercase tracking-widest bg-black/40 py-1 rounded">
                                     Encuadra el perfil aquí
                                 </div>
                             </div>
+                        </div>
+
+                        {/* IA Live Preview - Snapshot of what AI sees */}
+                        <div className="absolute top-4 right-4 w-24 h-24 border border-white/50 rounded overflow-hidden shadow-lg bg-black/50 z-20">
+                            <div className="absolute top-0 left-0 right-0 bg-black/60 text-[8px] text-white text-center py-0.5 uppercase">IA Vista</div>
+                            <canvas
+                                ref={canvasRef}
+                                className="w-full h-full object-contain"
+                                style={{ imageRendering: 'pixelated' }}
+                            />
                         </div>
 
                         {/* Capture Button */}
@@ -290,8 +300,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                 )}
             </div>
 
-            {/* Hidden Canvas for Capture */}
-            <canvas ref={canvasRef} className="hidden" />
         </div>
+        </div >
     );
 }
