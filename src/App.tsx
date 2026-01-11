@@ -149,6 +149,17 @@ function App() {
     }
   }, [selectedRef, pendingPrint])
 
+  // Auto-cleanup for old Service Workers (v2 -> v7 transition)
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        // If we see more than one or if it's the first run of v7, we could prune
+        // But for now, we just log
+        console.log('Active Service Workers:', registrations.length);
+      });
+    }
+  }, []);
+
   // Global Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -221,7 +232,7 @@ function App() {
         <div className="text-center mb-8 mt-4">
           <img src="/logo.webp" alt="Delfín" className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">
-            Delfín Etiquetas v5
+            Delfín Etiquetas v7
           </h1>
         </div>
 

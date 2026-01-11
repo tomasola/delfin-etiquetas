@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Limpiando Caché...</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <h1 style="font-family: sans-serif; text-align: center; margin-top: 50px;">Limpiando sistema... por favor espera.
+    </h1>
+    <script>
+        async function clearEverything() {
+            console.log("Iniciando limpieza profunda...");
+
+            // 1. Unregister all service workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let registration of registrations) {
+                    await registration.unregister();
+                    console.log("Service Worker desinstalado");
+                }
+            }
+
+            // 2. Clear all caches
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (let name of cacheNames) {
+                    await caches.delete(name);
+                    console.log("Caché eliminada:", name);
+                }
+            }
+
+            // 3. Clear storage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            console.log("Limpieza completada. Redirigiendo...");
+
+            // Redirect to home with a cache-buster query
+            window.location.href = "/?v=" + Date.now();
+        }
+
+        clearEverything().catch(err => {
+            alert("Error limpiando: " + err.message);
+            window.location.href = "/";
+        });
+    </script>
+</body>
+
+</html>
