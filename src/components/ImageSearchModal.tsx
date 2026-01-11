@@ -297,10 +297,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                             ))}
                         </div>
                     </div>
-                )}
             </div>
-
         </div>
-        </div >
     );
 }
