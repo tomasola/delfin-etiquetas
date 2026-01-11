@@ -42,16 +42,34 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
     const startCamera = async () => {
         try {
             setError(null);
-            const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' } // Prefer back camera
-            });
-            setStream(mediaStream);
-            if (videoRef.current) {
-                videoRef.current.srcObject = mediaStream;
+            // Try environment first, fall back to any available
+            let mediaStream: MediaStream;
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' },
+                    audio: false
+                });
+            } catch (e) {
+                console.warn('Environment camera failed, trying default', e);
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
             }
+
+            setStream(mediaStream);
+
+            // Wait for ref to be available
+            setTimeout(() => {
+                if (videoRef.current) {
+                    videoRef.current.srcObject = mediaStream;
+                    videoRef.current.play().catch(e => console.error("Play error:", e));
+                }
+            }, 100);
+
         } catch (err) {
             console.error(err);
-            setError('No se pudo acceder a la cámara. Asegúrate de dar permisos.');
+            setError('No se pudo acceder a la cámara. Revisa los permisos o intenta en otro navegador.');
         }
     };
 
@@ -131,6 +149,8 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                                 ref={videoRef}
                                 autoPlay
                                 playsInline
+                                muted
+                                onLoadedMetadata={() => videoRef.current?.play()}
                                 className="w-full h-full object-cover"
                             />
                         ) : (
