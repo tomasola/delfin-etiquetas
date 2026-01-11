@@ -1,5 +1,5 @@
 // Service Worker for offline functionality
-const CACHE_NAME = 'delfin-v1'
+const CACHE_NAME = 'delfin-v2'
 const urlsToCache = [
     '/',
     '/index.html',
