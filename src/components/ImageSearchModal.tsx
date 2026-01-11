@@ -90,6 +90,13 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
             const video = videoRef.current;
             const canvas = canvasRef.current;
 
+            // Ensure video has dimensions (is ready)
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+                console.warn("Video not ready yet (0x0)");
+                setAnalyzing(false);
+                return;
+            }
+
             // Draw video frame to canvas
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;

@@ -30,8 +30,8 @@ self.addEventListener('fetch', (event) => {
 
                 return fetch(event.request).then(
                     (response) => {
-                        // Check if valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
+                        // Check if valid response and scheme
+                        if (!response || response.status !== 200 || response.type !== 'basic' || !event.request.url.startsWith('http')) {
                             return response
                         }
 
