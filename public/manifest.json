@@ -1,6 +1,7 @@
 {
-    "name": "Delfín Etiquetas",
-    "short_name": "Delfín",
+    "name": "Delfín Etiquetas v10",
+    "short_name": "Delfín v10",
+    "id": "/v10",
     "description": "Catálogo de referencias Delfín - Búsqueda rápida de cortinas decorativas, guías y mosquiteras",
     "start_url": "/",
     "display": "standalone",
