@@ -169,9 +169,9 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
     return (
         <div className="fixed inset-0 z-50 bg-black flex flex-col items-stretch overflow-hidden">
             {/* Header + Logs */}
-            <div className="bg-gray-950 p-3 flex justify-between items-center text-white border-b border-gray-800">
+            <div className="bg-gray-950/80 backdrop-blur-lg p-3 flex justify-between items-center text-white border-b border-white/10">
                 <div className="flex flex-col">
-                    <span className="font-bold text-sm">Búsqueda IA v16 (INDUSTRIAL)</span>
+                    <span className="font-bold text-sm">Búsqueda IA v17 (INDUSTRIAL++)</span>
                     <div className="flex gap-2 text-[9px] text-green-500 font-mono mt-1">
                         {debugLogs.map((l, i) => <span key={i} className="opacity-70">{l} |</span>)}
                     </div>
@@ -312,8 +312,13 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences }
                             <button onClick={() => { setResults([]); startCamera(); }} className="text-[10px] bg-white/10 text-white px-3 py-1.5 rounded-lg active:scale-95">REINTENTAR</button>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
-                            {results.map(ref => (
-                                <div key={ref.code} onClick={() => setPreviewRef(ref)} className="relative bg-gray-900 rounded-lg overflow-hidden active:scale-95 transition-transform border border-white/5 shadow-md">
+                            {results.map((ref, idx) => (
+                                <div
+                                    key={ref.code}
+                                    onClick={() => setPreviewRef(ref)}
+                                    className="relative bg-gray-900 rounded-lg overflow-hidden active:scale-95 transition-transform border border-white/5 shadow-md cursor-pointer animate-cascade-in"
+                                    style={{ animationDelay: `${idx * 40}ms` }}
+                                >
                                     <img
                                         src={`/images/perfiles/${ref.code}.jpg`}
                                         onError={(e) => {

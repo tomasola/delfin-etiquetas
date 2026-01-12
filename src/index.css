@@ -8,3 +8,30 @@
     #printable-area { position: absolute; left: 0; top: 0; width: 100%; }
     .no-print { display: none !important; }
 }
+
+@layer utilities {
+    .glass-morphism {
+        @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl;
+    }
+    
+    .glass-morphism-dark {
+        @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+    }
+
+    .animate-cascade-in {
+        animation: cascadeIn 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+    @keyframes cascadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+

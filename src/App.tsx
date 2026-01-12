@@ -20,6 +20,7 @@ function App() {
   const [toasts, setToasts] = useState<ToastMessage[]>([])
   const [pendingPrint, setPendingPrint] = useState(false)
   const [showImageSearch, setShowImageSearch] = useState(false)
+  const [recentRefs, setRecentRefs] = useState<Reference[]>([])
 
   // Pagination
   const [page, setPage] = useState(1)
@@ -85,6 +86,7 @@ function App() {
 
   const handleSelectRef = (ref: Reference) => {
     setSelectedRef(ref)
+    addToHistory(ref)
   }
 
   const handleBack = () => {
@@ -148,6 +150,31 @@ function App() {
       return () => clearTimeout(timer)
     }
   }, [selectedRef, pendingPrint])
+
+  // Load recent scans from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('recent_scans')
+    if (saved) {
+      try {
+        setRecentRefs(JSON.parse(saved))
+      } catch (e) {
+        console.error('Error loading history:', e)
+      }
+    }
+  }, [])
+
+  // Save recent scans to localStorage
+  useEffect(() => {
+    localStorage.setItem('recent_scans', JSON.stringify(recentRefs))
+  }, [recentRefs])
+
+  const addToHistory = (ref: Reference) => {
+    setRecentRefs(prev => {
+      // Remove if already exists to move it to the top
+      const filtered = prev.filter(r => r.code !== ref.code)
+      return [ref, ...filtered].slice(0, 12) // Keep top 12
+    })
+  }
 
   // Auto-cleanup for old Service Workers (v2 -> v7 transition)
   useEffect(() => {
@@ -232,7 +259,7 @@ function App() {
         <div className="text-center mb-8 mt-4">
           <img src="/logo.webp" alt="Delfín" className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">
-            Delfín Etiquetas v16
+            Delfín Etiquetas v17
           </h1>
         </div>
 
@@ -341,10 +368,43 @@ function App() {
 
         {/* Empty state */}
         {!search && !selectedCategory && references.length > 0 && (
-          <div className="text-center text-gray-600 dark:text-gray-400 mt-12">
-            <p className="text-4xl mb-2">👆</p>
-            <p>Busca una referencia para comenzar</p>
-            <p className="text-sm mt-2">{references.length} referencias disponibles</p>
+          <div className="mt-8 animate-in fade-in duration-500">
+            {recentRefs.length > 0 ? (
+              <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                    <span>🕒</span> Escaneos Recientes
+                  </h2>
+                  <button
+                    onClick={() => setRecentRefs([])}
+                    className="text-xs text-gray-500 hover:text-red-500 transition-colors uppercase font-bold tracking-widest"
+                  >
+                    Limpiar
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  {recentRefs.map((ref, idx) => (
+                    <div
+                      key={ref.code}
+                      className="animate-cascade-in"
+                      style={{ animationDelay: `${idx * 50}ms` }}
+                    >
+                      <ReferenceCard
+                        reference={ref}
+                        onClick={handleSelectRef}
+                        onPrint={() => handlePrint(ref)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-gray-600 dark:text-gray-400 mt-12">
+                <p className="text-4xl mb-2">👆</p>
+                <p>Busca una referencia para comenzar</p>
+                <p className="text-sm mt-2">{references.length} referencias disponibles</p>
+              </div>
+            )}
           </div>
         )}
       </div>
