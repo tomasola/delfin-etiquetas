@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const IMAGES_DIR = path.join(ROOT_DIR, 'public', 'images');
+const IMAGES_DIR = path.join(ROOT_DIR, 'public', 'images', 'ai-references');
 const OUTPUT_FILE = path.join(ROOT_DIR, 'public', 'embeddings.json');
 
 async function main() {
@@ -45,7 +45,7 @@ async function main() {
                 scanDir(absolute);
             } else {
                 const ext = path.extname(file).toLowerCase();
-                if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+                if (['.jpg', '.jpeg', '.png', '.webp', '.bmp'].includes(ext)) {
                     files.push(absolute);
                 }
             }
