@@ -273,11 +273,11 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences, 
                                     {lastCapture && (
                                         <div className="flex-1 flex flex-col gap-1">
                                             <span className="text-[10px] text-blue-400 font-bold uppercase text-center tracking-tighter">📸 Tu Captura</span>
-                                            <div className="bg-gray-800 rounded-xl p-1 aspect-square flex items-center justify-center overflow-hidden border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                                            <div className="bg-gray-800 rounded-xl p-1 aspect-square flex items-center justify-center overflow-hidden border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                                                 <img
                                                     src={lastCapture.image}
                                                     className="w-full h-full object-contain"
-                                                    alt="Search Capture"
+                                                    alt="User Ref"
                                                 />
                                             </div>
                                         </div>
