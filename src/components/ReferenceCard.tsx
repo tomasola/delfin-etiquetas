@@ -3,14 +3,14 @@ import { RobustImage } from './RobustImage';
 
 interface ReferenceCardProps {
     reference: Reference;
-    onClick?: () => void;
+    onClick?: (ref: Reference) => void;
     onPrint?: (e: React.MouseEvent) => void;
 }
 
 export const ReferenceCard = ({ reference, onClick, onPrint }: ReferenceCardProps) => {
     return (
         <div
-            onClick={onClick}
+            onClick={() => onClick?.(reference)}
             className="group relative bg-[#1a1a1a] rounded-xl overflow-hidden border border-white/5 hover:border-blue-500/50 shadow-lg active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col"
         >
             <div className="relative aspect-video bg-white flex items-center justify-center p-2 overflow-hidden">
