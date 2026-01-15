@@ -45,7 +45,7 @@ async function main() {
                 scanDir(absolute);
             } else {
                 const ext = path.extname(file).toLowerCase();
-                if (['.jpg', '.jpeg', '.png', '.webp', '.bmp'].includes(ext)) {
+                if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
                     files.push(absolute);
                 }
             }
