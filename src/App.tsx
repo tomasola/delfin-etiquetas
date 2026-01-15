@@ -239,7 +239,6 @@ function App() {
           reference={selectedRef}
           onBack={handleBack}
           onSave={handleSave}
-          userRefMap={userRefMap}
         />
         <ToastContainer messages={toasts} onClose={removeToast} />
       </>
@@ -351,7 +350,6 @@ function App() {
                   reference={ref}
                   onClick={handleSelectRef}
                   onPrint={() => handlePrint(ref)}
-                  userRefMap={userRefMap}
                 />
               ))}
             </div>
@@ -419,7 +417,6 @@ function App() {
                         reference={ref}
                         onClick={handleSelectRef}
                         onPrint={() => handlePrint(ref)}
-                        userRefMap={userRefMap}
                       />
                     </div>
                   ))}

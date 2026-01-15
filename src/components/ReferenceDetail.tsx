@@ -8,10 +8,9 @@ interface ReferenceDetailProps {
     reference: Reference;
     onBack: () => void;
     onSave: (success: boolean) => void;
-    userRefMap?: Record<string, { image: string }>;
 }
 
-export function ReferenceDetail({ reference, onBack, onSave, userRefMap }: ReferenceDetailProps) {
+export function ReferenceDetail({ reference, onBack, onSave }: ReferenceDetailProps) {
     const [refData, setRefData] = useState<ReferenceData>({ length: '', quantity: '', boxSize: '', notes: '' })
     const [originalData, setOriginalData] = useState<ReferenceData | null>(null)
     const [loading, setLoading] = useState(true)
@@ -105,7 +104,6 @@ export function ReferenceDetail({ reference, onBack, onSave, userRefMap }: Refer
                         <RobustImage
                             code={reference.code}
                             className="w-full max-h-80 object-contain group-hover:scale-105 transition-transform duration-700"
-                            userRefMap={userRefMap}
                         />
                         <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-900/10 to-transparent pointer-events-none"></div>
                     </div>

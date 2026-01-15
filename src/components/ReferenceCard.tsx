@@ -5,10 +5,9 @@ interface ReferenceCardProps {
     reference: Reference;
     onClick: (ref: Reference) => void;
     onPrint: () => void;
-    userRefMap?: Record<string, { image: string }>;
 }
 
-export function ReferenceCard({ reference, onClick, onPrint, userRefMap }: ReferenceCardProps) {
+export function ReferenceCard({ reference, onClick, onPrint }: ReferenceCardProps) {
     return (
         <div
             onClick={() => onClick(reference)}
@@ -18,7 +17,6 @@ export function ReferenceCard({ reference, onClick, onPrint, userRefMap }: Refer
                 <RobustImage
                     code={reference.code}
                     className="w-full h-full object-contain"
-                    userRefMap={userRefMap}
                 />
 
                 {onPrint && (
