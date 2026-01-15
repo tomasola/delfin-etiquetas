@@ -164,9 +164,10 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences, 
                 ctx.filter = 'none';
                 ctx.drawImage(video, startX, startY, size, size, 0, 0, 224, 224);
                 addLog("v18: Analyzing...");
-                const { matches, inputVector } = await findMatches(canvas, 10);
+                // Pass userRefMap so IA uses previous learning
+                const { matches, inputVector } = await findMatches(canvas, 10, userRefMap);
 
-                // Store this capture for potential comparison
+                // Store this capture for potential confirmation
                 setLastCapture({
                     embedding: inputVector,
                     image: canvas.toDataURL('image/jpeg', 0.8)
@@ -177,7 +178,7 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences, 
                     return ref ? { ...ref, score: m.score, embedding: m.embedding } : null;
                 }).filter(Boolean) as (Reference & { score: number, embedding?: number[] })[];
                 setResults(fullResults);
-                stopCamera();
+                // We keep camera for a moment to allow preview confirm
             }
         } catch (err: any) {
             setError('Error Análisis: ' + err.message);
@@ -264,7 +265,6 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences, 
                                             <RobustImage
                                                 code={previewRef.code}
                                                 className="w-full h-full object-contain"
-                                                userRefMap={userRefMap}
                                             />
                                         </div>
                                     </div>
@@ -342,7 +342,6 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences, 
                                     <RobustImage
                                         code={comparisonRefCode || ''}
                                         className="w-full h-16 object-contain bg-white rounded-lg mb-1"
-                                        userRefMap={userRefMap}
                                     />
                                     <div className="text-[10px] text-white font-bold text-center truncate px-1">{comparisonRefCode}</div>
                                     <div className={`text-xs font-bold text-center mt-1 font-mono ${liveScore && liveScore > 0.85 ? 'text-green-500' : 'text-orange-400'}`}>
@@ -421,7 +420,6 @@ export function ImageSearchModal({ isOpen, onClose, onSelectRef, allReferences, 
                                     <RobustImage
                                         code={ref.code}
                                         className="w-full h-20 object-contain p-1 bg-white"
-                                        userRefMap={userRefMap}
                                     />
                                     <div className="p-1 pb-2">
                                         <div className="font-bold text-white text-[10px] truncate">{ref.code}</div>

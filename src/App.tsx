@@ -152,22 +152,35 @@ function App() {
     }
   }, [selectedRef, pendingPrint])
 
-  // Load recent scans from localStorage
+  // Load data from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('recent_scans')
-    if (saved) {
+    const savedHistory = localStorage.getItem('recent_scans')
+    if (savedHistory) {
       try {
-        setRecentRefs(JSON.parse(saved))
+        setRecentRefs(JSON.parse(savedHistory))
       } catch (e) {
         console.error('Error loading history:', e)
       }
     }
+
+    const savedUserRefs = localStorage.getItem('user_ref_map')
+    if (savedUserRefs) {
+      try {
+        setUserRefMap(JSON.parse(savedUserRefs))
+      } catch (e) {
+        console.error('Error loading user refs:', e)
+      }
+    }
   }, [])
 
-  // Save recent scans to localStorage
+  // Save data to localStorage
   useEffect(() => {
     localStorage.setItem('recent_scans', JSON.stringify(recentRefs))
   }, [recentRefs])
+
+  useEffect(() => {
+    localStorage.setItem('user_ref_map', JSON.stringify(userRefMap))
+  }, [userRefMap])
 
   const addToHistory = (ref: Reference) => {
     setRecentRefs(prev => {
@@ -269,7 +282,7 @@ function App() {
         <div className="text-center mb-8 mt-4">
           <img src="/logo.webp" alt="Delfín" className="w-20 h-20 mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">
-            Delfín Etiquetas v20
+            Delfín Etiquetas v21
           </h1>
         </div>
 

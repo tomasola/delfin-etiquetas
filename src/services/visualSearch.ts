@@ -44,7 +44,8 @@ export const getEmbedding = async (
 
 export const findMatches = async (
     imgElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
-    limit: number = 5
+    limit: number = 5,
+    userRefMap?: Record<string, { embedding: number[], image: string }>
 ) => {
     const { embeddings } = await loadResources();
     if (!embeddings) throw new Error('Embeddings not loaded');
@@ -52,8 +53,17 @@ export const findMatches = async (
     const inputVector = await getEmbedding(imgElement);
 
     const matches = embeddings.map(record => {
-        const score = cosineSimilarity(inputVector, record.embedding);
-        return { ...record, score };
+        let bestScore = cosineSimilarity(inputVector, record.embedding);
+
+        // If user has a personalized capture for THIS particular reference, check it too
+        if (userRefMap && userRefMap[record.code]) {
+            const userScore = cosineSimilarity(inputVector, userRefMap[record.code].embedding);
+            if (userScore > bestScore) {
+                bestScore = userScore;
+            }
+        }
+
+        return { ...record, score: bestScore };
     });
 
     matches.sort((a, b) => b.score - a.score);
